@@ -1,5 +1,7 @@
 package at.htlle.da.backend.services;
 
+import at.htlle.da.backend.dtos.FriendDTO;
+import at.htlle.da.backend.dtos.FriendRequestDTO;
 import at.htlle.da.backend.entities.FriendRequest;
 import at.htlle.da.backend.entities.Friend;
 import at.htlle.da.backend.entities.UserEntity;
@@ -9,12 +11,11 @@ import at.htlle.da.backend.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.sql.Date;
 import java.time.LocalDate;
-import java.util.Set;
+import java.util.List;
 
 @Service
-public class FriendRequestService {
+public class FriendService {
     @Autowired
     private UserRepository userRepository;
     @Autowired
@@ -22,11 +23,11 @@ public class FriendRequestService {
     @Autowired
     private FriendRepository friendRepository;
 
-    public void sendRequest(String senderEmail, String receiverEmail) {
+    public void sendRequest(String senderEmail, String receiverUsername) {
         UserEntity sender = userRepository.findById(senderEmail)
                 .orElseThrow(() -> new IllegalArgumentException("Sender not found: " + senderEmail));
-        UserEntity receiver = userRepository.findById(receiverEmail)
-                .orElseThrow(() -> new IllegalArgumentException("Receiver not found: " + receiverEmail));
+        UserEntity receiver = userRepository.findByUsername(receiverUsername)
+                .orElseThrow(() -> new IllegalArgumentException("Receiver not found: " + receiverUsername));
 
 
         if (friendRequestRepository.existsBySenderAndReceiver(sender, receiver)) {
@@ -36,14 +37,15 @@ public class FriendRequestService {
         FriendRequest request = new FriendRequest();
         request.setSender(sender);
         request.setReceiver(receiver);
+        request.setSendingDate(LocalDate.now());
         sender.getSender().add(request);
         receiver.getReceiver().add(request);
         friendRequestRepository.save(request);
     }
 
-    public void acceptRequest(String senderEmail, String receiverEmail) {
-        UserEntity sender = userRepository.findById(senderEmail)
-                .orElseThrow(() -> new IllegalArgumentException("Sender not found: " + senderEmail));
+    public void acceptRequest(String senderUserName, String receiverEmail) {
+        UserEntity sender = userRepository.findByUsername(senderUserName)
+                .orElseThrow(() -> new IllegalArgumentException("Sender not found: " + senderUserName));
         UserEntity receiver = userRepository.findById(receiverEmail)
                 .orElseThrow(() -> new IllegalArgumentException("Receiver not found: " + receiverEmail));
 
@@ -67,19 +69,25 @@ public class FriendRequestService {
         friendRequestRepository.delete(request);
     }
 
-    public Set<Friend> getAllFriends(String email) {
+    public List<FriendDTO> getAllFriends(String email) {
         UserEntity user = userRepository.findById(email).orElseThrow();
-        return user.getFriends();
+        return user.getFriends()
+                .stream()
+                .map(fr -> new FriendDTO(fr.getFriend().getUsername(), fr.getFriendsSince())).toList();
     }
 
-    public Set<FriendRequest> getAllSendingFriendRequests(String email) {
+    public List<FriendRequestDTO> getAllSendingFriendRequests(String email) {
         UserEntity sendingUser = userRepository.findById(email).orElseThrow();
-        return friendRequestRepository.findBySender(sendingUser);
+        return friendRequestRepository.findByReceiver(sendingUser)
+                .stream()
+                .map(fr -> new FriendRequestDTO(fr.getReceiver().getUsername(), fr.getSendingDate())).toList();
     }
 
-    public Set<FriendRequest> getAllReceivingFriendRequests(String email) {
+    public List<FriendRequestDTO> getAllIncomingFriendRequests(String email) {
         UserEntity receivingUser = userRepository.findById(email).orElseThrow();
-        return friendRequestRepository.findByReceiver(receivingUser);
+        return friendRequestRepository.findByReceiver(receivingUser)
+                .stream()
+                .map(fr -> new FriendRequestDTO(fr.getSender().getUsername(), fr.getSendingDate())).toList();
     }
 
 }

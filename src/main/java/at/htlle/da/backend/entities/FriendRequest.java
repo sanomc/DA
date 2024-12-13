@@ -2,6 +2,8 @@ package at.htlle.da.backend.entities;
 
 import jakarta.persistence.*;
 
+import java.time.LocalDate;
+
 @Entity
 @Table(name = "friend_requests")
 public class FriendRequest {
@@ -19,6 +21,8 @@ public class FriendRequest {
     private UserEntity receiver;
 
     private String status = "PENDING"; // Default status
+
+    private LocalDate sendingDate;
 
     public FriendRequest() {
     }
@@ -53,6 +57,14 @@ public class FriendRequest {
 
     public void setStatus(String status) {
         this.status = status;
+    }
+
+    public LocalDate getSendingDate() {
+        return sendingDate;
+    }
+
+    public void setSendingDate(LocalDate sendingDate) {
+        this.sendingDate = sendingDate;
     }
 }
 

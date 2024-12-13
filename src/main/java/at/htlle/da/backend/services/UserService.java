@@ -23,6 +23,6 @@ public class UserService {
     }
 
     public String getProfilePicture(String email) {
-        return userRepository.getReferenceById(email).getProfilePictureHash();
+        return userRepository.findById(email).orElseThrow(() -> new IllegalArgumentException("Email not found: " + email)).getProfilePictureHash();
     }
 }

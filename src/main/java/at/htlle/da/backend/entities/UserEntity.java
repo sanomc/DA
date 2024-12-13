@@ -5,12 +5,12 @@ import jakarta.persistence.*;
 import java.util.*;
 
 @Entity
-@Table(name = "users")
+@Table(name = "user")
 public class UserEntity {
     @Id
     private String email;
     @Column(unique = true)
-    private String userName;
+    private String username;
     private String firstName;
     private String lastName;
     private String profilePictureHash;
@@ -20,13 +20,16 @@ public class UserEntity {
     }
 
     @OneToMany(mappedBy = "receiver", cascade = CascadeType.ALL, orphanRemoval = true)
-    private Set<FriendRequest> receiver = new HashSet<>();
+    private List<FriendRequest> receiver = new ArrayList<>();
 
     @OneToMany(mappedBy = "sender", cascade = CascadeType.ALL, orphanRemoval = true)
-    private Set<FriendRequest> sender = new HashSet<>();
+    private List<FriendRequest> sender = new ArrayList<>();
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
-    private Set<Friend> friends = new HashSet<>();
+    private List<Friend> friends = new ArrayList<>();
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<Route> routes = new HashSet<>();
 
     public String getEmail() {
         return email;
@@ -48,17 +51,17 @@ public class UserEntity {
         this.lastName = lastName;
     }
 
-    public Set<Friend> getFriends() {
+    public List<Friend> getFriends() {
         return friends;
     }
 
 
-    public Set<FriendRequest> getReceiver() {
+    public List<FriendRequest> getReceiver() {
         return receiver;
     }
 
 
-    public Set<FriendRequest> getSender() {
+    public List<FriendRequest> getSender() {
         return sender;
     }
 
@@ -71,27 +74,27 @@ public class UserEntity {
         this.profilePictureHash = profilePicture;
     }
 
-    public String getUserName() {
-        return userName;
+    public String getUsername() {
+        return username;
     }
 
-    public void setUserName(String userName) {
-        this.userName = userName;
+    public void setUsername(String userName) {
+        this.username = userName;
     }
 
     public String getLastName() {
         return lastName;
     }
 
-    public void setFriends(Set<Friend> friends) {
+    public void setFriends(List<Friend> friends) {
         this.friends = friends;
     }
 
-    public void setReceiver(Set<FriendRequest> receiver) {
+    public void setReceiver(List<FriendRequest> receiver) {
         this.receiver = receiver;
     }
 
-    public void setSender(Set<FriendRequest> sender) {
+    public void setSender(List<FriendRequest> sender) {
         this.sender = sender;
     }
 

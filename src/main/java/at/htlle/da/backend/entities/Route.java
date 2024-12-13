@@ -1,8 +1,10 @@
 package at.htlle.da.backend.entities;
 
 import jakarta.persistence.*;
+import org.apache.catalina.User;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Entity
 public class Route {
@@ -16,6 +18,11 @@ public class Route {
     @ManyToOne
     @JoinColumn(name = "name")
     private Type movementType;
+
+    @ManyToOne
+    @JoinColumn(name = "email")
+    private UserEntity user;
+
     private Double lengthKm;
 
     private LocalDateTime timestamp;
