@@ -5,6 +5,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 
+import java.time.LocalDate;
 import java.util.Date;
 
 @Entity
@@ -20,7 +21,7 @@ public class Friend {
     @JoinColumn(name = "friend", nullable = false)
     private UserEntity friend;
 
-    private Date friendsSince;
+    private LocalDate friendsSince;
 
     public void setId(Long id) {
         this.id = id;
@@ -46,11 +47,11 @@ public class Friend {
         this.friend = friend;
     }
 
-    public Date getFriendsSince() {
+    public LocalDate getFriendsSince() {
         return friendsSince;
     }
 
-    public void setFriendsSince(Date friendsSince) {
+    public void setFriendsSince(LocalDate friendsSince) {
         this.friendsSince = friendsSince;
     }
 }

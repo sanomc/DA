@@ -52,11 +52,11 @@ public class FriendRequestService {
         Friend senderFriend = new Friend();
         senderFriend.setUser(sender);
         senderFriend.setFriend(receiver);
-        senderFriend.setFriendsSince(Date.valueOf(LocalDate.now()));
+        senderFriend.setFriendsSince(LocalDate.now());
         Friend receiverFriend = new Friend();
         receiverFriend.setUser(receiver);
         receiverFriend.setFriend(sender);
-        receiverFriend.setFriendsSince(Date.valueOf(LocalDate.now()));
+        receiverFriend.setFriendsSince(LocalDate.now());
         sender.getFriends().add(senderFriend);
         receiver.getFriends().add(receiverFriend);
         friendRepository.save(senderFriend);
