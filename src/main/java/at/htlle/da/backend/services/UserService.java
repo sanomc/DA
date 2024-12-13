@@ -16,13 +16,13 @@ public class UserService {
             user.setEmail(email);
             user.setFirstName(firstName);
             user.setLastName(lastName);
-            user.setProfilePicture(profilePicture);
+            user.setProfilePictureHash(profilePicture);
             userRepository.save(user);
         }
 
     }
 
     public String getProfilePicture(String email) {
-        return userRepository.getReferenceById(email).getProfilePicture();
+        return userRepository.getReferenceById(email).getProfilePictureHash();
     }
 }

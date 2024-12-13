@@ -1,12 +1,16 @@
 package at.htlle.da.backend.services;
 
 import at.htlle.da.backend.entities.FriendRequest;
+import at.htlle.da.backend.entities.Friend;
 import at.htlle.da.backend.entities.UserEntity;
 import at.htlle.da.backend.repositories.FriendRequestRepository;
+import at.htlle.da.backend.repositories.FriendRepository;
 import at.htlle.da.backend.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.sql.Date;
+import java.time.LocalDate;
 import java.util.Set;
 
 @Service
@@ -15,6 +19,8 @@ public class FriendRequestService {
     private UserRepository userRepository;
     @Autowired
     private FriendRequestRepository friendRequestRepository;
+    @Autowired
+    private FriendRepository friendRepository;
 
     public void sendRequest(String senderEmail, String receiverEmail) {
         UserEntity sender = userRepository.findById(senderEmail)
@@ -43,16 +49,25 @@ public class FriendRequestService {
 
         FriendRequest request = friendRequestRepository.findBySenderAndReceiver(sender, receiver)
                 .orElseThrow(() -> new IllegalStateException("Friend request not found"));
-
-        sender.getFriends().add(receiver);
-        receiver.getFriends().add(sender);
+        Friend senderFriend = new Friend();
+        senderFriend.setUser(sender);
+        senderFriend.setFriend(receiver);
+        senderFriend.setFriendsSince(Date.valueOf(LocalDate.now()));
+        Friend receiverFriend = new Friend();
+        receiverFriend.setUser(receiver);
+        receiverFriend.setFriend(sender);
+        receiverFriend.setFriendsSince(Date.valueOf(LocalDate.now()));
+        sender.getFriends().add(senderFriend);
+        receiver.getFriends().add(receiverFriend);
+        friendRepository.save(senderFriend);
+        friendRepository.save(receiverFriend);
         userRepository.save(sender);
         userRepository.save(receiver);
 
         friendRequestRepository.delete(request);
     }
 
-    public Set<UserEntity> getAllFriends(String email) {
+    public Set<Friend> getAllFriends(String email) {
         UserEntity user = userRepository.findById(email).orElseThrow();
         return user.getFriends();
     }
