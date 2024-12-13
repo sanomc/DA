@@ -29,7 +29,7 @@ public class UserEntity {
     private List<Friend> friends = new ArrayList<>();
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
-    private Set<Route> routes = new HashSet<>();
+    private List<Route> routes = new ArrayList<>();
 
     public String getEmail() {
         return email;
@@ -98,4 +98,11 @@ public class UserEntity {
         this.sender = sender;
     }
 
+    public List<Route> getRoutes() {
+        return routes;
+    }
+
+    public void ListRoutes(List<Route> routes) {
+        this.routes = routes;
+    }
 }

@@ -27,6 +27,8 @@ public class Route {
 
     private LocalDateTime timestamp;
 
+    private Double emissions;
+
 
     public void setId(Long id) {
         this.id = id;
@@ -74,5 +76,21 @@ public class Route {
 
     public void setTimestamp(LocalDateTime timestamp) {
         this.timestamp = timestamp;
+    }
+
+    public UserEntity getUser() {
+        return user;
+    }
+
+    public void setUser(UserEntity user) {
+        this.user = user;
+    }
+
+    public Double getEmissions() {
+        return emissions;
+    }
+
+    public void setEmissions(Double emissions) {
+        this.emissions = emissions;
     }
 }

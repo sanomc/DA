@@ -25,9 +25,9 @@ public class FriendService {
 
     public void sendRequest(String senderEmail, String receiverUsername) {
         UserEntity sender = userRepository.findById(senderEmail)
-                .orElseThrow(() -> new IllegalArgumentException("Sender not found: " + senderEmail));
+                .orElseThrow();
         UserEntity receiver = userRepository.findByUsername(receiverUsername)
-                .orElseThrow(() -> new IllegalArgumentException("Receiver not found: " + receiverUsername));
+                .orElseThrow();
 
 
         if (friendRequestRepository.existsBySenderAndReceiver(sender, receiver)) {
@@ -45,12 +45,12 @@ public class FriendService {
 
     public void acceptRequest(String senderUserName, String receiverEmail) {
         UserEntity sender = userRepository.findByUsername(senderUserName)
-                .orElseThrow(() -> new IllegalArgumentException("Sender not found: " + senderUserName));
+                .orElseThrow();
         UserEntity receiver = userRepository.findById(receiverEmail)
-                .orElseThrow(() -> new IllegalArgumentException("Receiver not found: " + receiverEmail));
+                .orElseThrow();
 
         FriendRequest request = friendRequestRepository.findBySenderAndReceiver(sender, receiver)
-                .orElseThrow(() -> new IllegalStateException("Friend request not found"));
+                .orElseThrow();
         Friend senderFriend = new Friend();
         senderFriend.setUser(sender);
         senderFriend.setFriend(receiver);
