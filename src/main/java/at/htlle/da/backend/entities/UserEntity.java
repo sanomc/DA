@@ -9,32 +9,14 @@ import java.util.*;
 public class UserEntity {
     @Id
     private String email;
+    @Column(unique = true)
+    private String userName;
     private String firstName;
     private String lastName;
-    private String profilePicture;
+    private String profilePictureHash;
 
-    @ManyToMany
-    @JoinTable(
-            name = "user_friends",
-            joinColumns = @JoinColumn(name = "user_id"),
-            inverseJoinColumns = @JoinColumn(name = "friend_id")
-    )
-
-    private Set<UserEntity> friends = new HashSet<>();
 
     public UserEntity() {
-    }
-
-    public void addFriend(UserEntity user) {
-        if (this.friends.add(user)) {
-            user.getFriends().add(this);
-        }
-    }
-
-    public void removeFriend(UserEntity user) {
-        if (this.friends.remove(user)) {
-            user.getFriends().remove(this);
-        }
     }
 
     @OneToMany(mappedBy = "receiver", cascade = CascadeType.ALL, orphanRemoval = true)
@@ -42,6 +24,9 @@ public class UserEntity {
 
     @OneToMany(mappedBy = "sender", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<FriendRequest> sender = new HashSet<>();
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<Friend> friends = new HashSet<>();
 
     public String getEmail() {
         return email;
@@ -59,43 +44,55 @@ public class UserEntity {
         this.firstName = firstName;
     }
 
-    public String getLastName() {
-        return lastName;
-    }
-
     public void setLastName(String lastName) {
         this.lastName = lastName;
     }
 
-    public Set<UserEntity> getFriends() {
+    public Set<Friend> getFriends() {
         return friends;
     }
 
-    public void setFriends(Set<UserEntity> friends) {
-        this.friends = friends;
-    }
 
     public Set<FriendRequest> getReceiver() {
         return receiver;
+    }
+
+
+    public Set<FriendRequest> getSender() {
+        return sender;
+    }
+
+
+    public String getProfilePictureHash() {
+        return profilePictureHash;
+    }
+
+    public void setProfilePictureHash(String profilePicture) {
+        this.profilePictureHash = profilePicture;
+    }
+
+    public String getUserName() {
+        return userName;
+    }
+
+    public void setUserName(String userName) {
+        this.userName = userName;
+    }
+
+    public String getLastName() {
+        return lastName;
+    }
+
+    public void setFriends(Set<Friend> friends) {
+        this.friends = friends;
     }
 
     public void setReceiver(Set<FriendRequest> receiver) {
         this.receiver = receiver;
     }
 
-    public Set<FriendRequest> getSender() {
-        return sender;
-    }
-
     public void setSender(Set<FriendRequest> sender) {
         this.sender = sender;
     }
 
-    public String getProfilePicture() {
-        return profilePicture;
-    }
-
-    public void setProfilePicture(String profilePicture) {
-        this.profilePicture = profilePicture;
-    }
 }
