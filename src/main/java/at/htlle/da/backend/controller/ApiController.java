@@ -1,6 +1,8 @@
 package at.htlle.da.backend.controller;
 
 import at.htlle.da.backend.dtos.FullRouteDTO;
+import at.htlle.da.backend.dtos.HistoryDTO;
+import at.htlle.da.backend.dtos.HistoryRequestDTO;
 import at.htlle.da.backend.dtos.RouteDTO;
 import at.htlle.da.backend.entities.Route;
 import at.htlle.da.backend.entities.Type;
@@ -39,10 +41,10 @@ public class ApiController {
         }
     }
     @DeleteMapping("/route/{id}")
-    public ResponseEntity<Void> deleteRoute(@PathVariable Long id, @AuthenticationPrincipal Jwt principal) {
+    public ResponseEntity<String> deleteRoute(@PathVariable Long id, @AuthenticationPrincipal Jwt principal) {
         try {
             emissionService.deleteRoute(principal.getClaim("email"), id);
-            return ResponseEntity.noContent().build();
+            return ResponseEntity.ok("Route deleted!");
         } catch (WrongUserException e) {
             return ResponseEntity.status(401).build();
         }
@@ -51,6 +53,12 @@ public class ApiController {
     @GetMapping("/route")
     public ResponseEntity<List<FullRouteDTO>> getRoutesByUser(@AuthenticationPrincipal Jwt principal) {
         return ResponseEntity.ok(emissionService.getRoutesByUser(principal.getClaim("email")));
+    }
+
+    @GetMapping("/history")
+    public ResponseEntity<List<HistoryDTO>> getHistory(@RequestBody HistoryRequestDTO historyRequestDTO, @AuthenticationPrincipal Jwt principal) {
+        List<HistoryDTO> history = emissionService.getHistory(principal.getClaim("email"), historyRequestDTO.getStartDate(), historyRequestDTO.getEndDate());
+        return ResponseEntity.ok(history);
     }
 
 

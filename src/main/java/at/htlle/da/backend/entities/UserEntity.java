@@ -2,6 +2,8 @@ package at.htlle.da.backend.entities;
 
 import jakarta.persistence.*;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.*;
 
 @Entity
@@ -13,7 +15,9 @@ public class UserEntity {
     private String username;
     private String firstName;
     private String lastName;
-    private String profilePictureHash;
+    @Lob
+    private byte[] profilePictureHash;
+    private LocalDate accountCreated;
 
 
     public UserEntity() {
@@ -66,11 +70,11 @@ public class UserEntity {
     }
 
 
-    public String getProfilePictureHash() {
+    public byte[] getProfilePictureHash() {
         return profilePictureHash;
     }
 
-    public void setProfilePictureHash(String profilePicture) {
+    public void setProfilePictureHash(byte[] profilePicture) {
         this.profilePictureHash = profilePicture;
     }
 
@@ -103,6 +107,18 @@ public class UserEntity {
     }
 
     public void ListRoutes(List<Route> routes) {
+        this.routes = routes;
+    }
+
+    public LocalDate getAccountCreated() {
+        return accountCreated;
+    }
+
+    public void setAccountCreated(LocalDate accountCreated) {
+        this.accountCreated = accountCreated;
+    }
+
+    public void setRoutes(List<Route> routes) {
         this.routes = routes;
     }
 }

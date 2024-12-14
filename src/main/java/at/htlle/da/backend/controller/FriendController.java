@@ -3,8 +3,6 @@ package at.htlle.da.backend.controller;
 
 import at.htlle.da.backend.dtos.FriendDTO;
 import at.htlle.da.backend.dtos.FriendRequestDTO;
-import at.htlle.da.backend.entities.Friend;
-import at.htlle.da.backend.repositories.FriendRepository;
 import at.htlle.da.backend.services.FriendService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -15,7 +13,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/friends")
+@RequestMapping("/friends")
 public class FriendController {
 
     @Autowired
@@ -41,13 +39,19 @@ public class FriendController {
 
 
     @GetMapping("/incoming-requests")
-    public List<FriendRequestDTO> getAllReceivedFriendRequests(@AuthenticationPrincipal Jwt principal) {
-        return friendService.getAllIncomingFriendRequests(principal.getClaim("email"));
+    public ResponseEntity<List<FriendRequestDTO>> getAllReceivedFriendRequests(@AuthenticationPrincipal Jwt principal) {
+        return ResponseEntity.ok(friendService.getAllIncomingFriendRequests(principal.getClaim("email")));
     }
 
 
     @GetMapping("/all-sent-requests")
-    public List<FriendRequestDTO> getAllSentFriendRequests(@AuthenticationPrincipal Jwt principal) {
-        return friendService.getAllSendingFriendRequests(principal.getClaim("email"));
+    public ResponseEntity<List<FriendRequestDTO>> getAllSentFriendRequests(@AuthenticationPrincipal Jwt principal) {
+        return ResponseEntity.ok(friendService.getAllSendingFriendRequests(principal.getClaim("email")));
+    }
+
+    @DeleteMapping("/{username}")
+    public ResponseEntity<String> endFriendShip(@PathVariable String username, @AuthenticationPrincipal Jwt principal) {
+        friendService.deleteFriendship(principal.getClaim("email"), username);
+        return ResponseEntity.ok("Friend " + username + " removed!");
     }
 }

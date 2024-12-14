@@ -1,10 +1,8 @@
 package at.htlle.da.backend.entities;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
+import jakarta.persistence.*;
 
+import javax.annotation.processing.Generated;
 import java.time.LocalDate;
 import java.util.Date;
 
@@ -12,6 +10,7 @@ import java.util.Date;
 public class Friend {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
     @ManyToOne

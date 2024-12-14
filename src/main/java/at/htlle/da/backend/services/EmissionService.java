@@ -1,6 +1,7 @@
 package at.htlle.da.backend.services;
 
 import at.htlle.da.backend.dtos.FullRouteDTO;
+import at.htlle.da.backend.dtos.HistoryDTO;
 import at.htlle.da.backend.dtos.RouteDTO;
 import at.htlle.da.backend.entities.Route;
 import at.htlle.da.backend.entities.Type;
@@ -12,8 +13,11 @@ import at.htlle.da.backend.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 @Service
 public class EmissionService {
@@ -86,6 +90,22 @@ public class EmissionService {
                 .map(u -> new FullRouteDTO(
                         u.getId(), u.getStart(), u.getEnd(), u.getMovementType().getName(), u.getLengthKm(), u.getTimestamp(), u.getEmissions()
                 )).toList();
+    }
+
+
+    public List<HistoryDTO> getHistory(String email, LocalDate startDate, LocalDate endDate) {
+        List<Route> routes = routeRepository.findByUserEmailAndTimestampBetween(email, startDate.atStartOfDay(), endDate.atTime(23, 59, 59));
+
+        Map<LocalDate, Double> emissionsByDate = routes.stream()
+                .collect(Collectors.groupingBy(
+                        route -> route.getTimestamp().toLocalDate(),
+                        Collectors.summingDouble(Route::getEmissions)
+                ));
+
+
+        return emissionsByDate.entrySet().stream()
+                .map(entry -> new HistoryDTO(entry.getKey(), entry.getValue()))
+                .collect(Collectors.toList());
     }
 
 }
