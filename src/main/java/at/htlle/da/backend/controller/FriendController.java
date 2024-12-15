@@ -32,7 +32,7 @@ public class FriendController {
         return ResponseEntity.ok("Friend request accepted!");
     }
 
-    @GetMapping("/")
+    @GetMapping
     public ResponseEntity<List<FriendDTO>> getAllFriends(@AuthenticationPrincipal Jwt principal) {
         return ResponseEntity.ok(friendService.getAllFriends(principal.getClaim("email")));
     }

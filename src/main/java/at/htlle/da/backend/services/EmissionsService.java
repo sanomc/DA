@@ -5,6 +5,8 @@ import at.htlle.da.backend.entities.EmissionsCalculator;
 import at.htlle.da.backend.entities.Friend;
 import at.htlle.da.backend.entities.UserEntity;
 import at.htlle.da.backend.entities.calculations.Diet;
+import at.htlle.da.backend.entities.calculations.EnergyConsumption;
+import at.htlle.da.backend.entities.calculations.Waste;
 import at.htlle.da.backend.repositories.*;
 import at.htlle.da.backend.util.WeekConverter;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,6 +32,8 @@ public class EmissionsService {
     private RouteRepository routeRepository;
     @Autowired
     private RouteService routeService;
+    @Autowired
+    private EnergyConsumptionRepository energyConsumptionRepository;
 
     public double calculateEmissions(String email, EmissionsDTO emissionsDTO) {
 
@@ -60,11 +64,8 @@ public class EmissionsService {
 
         calculator.setTotalEmissions(emissions);
 
-        diet.getEmissions().add(calculator);
         user.getEmissions().add(calculator);
 
-        userRepository.save(user);
-        dietRepository.save(diet);
         emissionsCalculatorRepository.save(calculator);
 
         return emissions;
@@ -73,6 +74,16 @@ public class EmissionsService {
         return routes.stream()
                 .mapToDouble(HistoryDTO::getCo2Emissions)
                 .sum();
+    }
+    public List<Waste> getAllWasteTypes() {
+        return wasteRepository.findAll();
+    }
+    public List<DietDTO> getAllDietTypes() {
+        return dietRepository.findAll().stream()
+                .map(diet -> new DietDTO(diet.getDietType(), diet.getEmissionsPerWeek())).toList();
+    }
+    public List<EnergyConsumption> getAllEnergyTypes() {
+        return energyConsumptionRepository.findAll();
     }
 
 
@@ -84,7 +95,7 @@ public class EmissionsService {
 
     private double calculateEnergyEmissions(Map<String, Double> kwh) {
         return kwh.entrySet().stream()
-                .mapToDouble(entry -> wasteRepository.findById(entry.getKey()).orElseThrow().getEmissionsPerKg() * entry.getValue())
+                .mapToDouble(entry -> energyConsumptionRepository.findById(entry.getKey()).orElseThrow().getEmissionsPerKwh() * entry.getValue())
                 .sum();
     }
     public double getEmissionsByWeek(String email, String week) {

@@ -26,7 +26,7 @@ public class RouteController {
     public ResponseEntity<List<Type>> getAllTypes() {
         return ResponseEntity.ok(routeService.getAllTypes());
     }
-    @PostMapping("/")
+    @PostMapping
     public ResponseEntity<Double> addRoute(@AuthenticationPrincipal Jwt principal, @RequestBody RouteDTO routeDTO) {
         return ResponseEntity.ok(routeService.addRoute(principal.getClaim("email"), routeDTO));
     }
@@ -48,7 +48,7 @@ public class RouteController {
         }
     }
 
-    @GetMapping("/")
+    @GetMapping
     public ResponseEntity<List<FullRouteDTO>> getRoutesByUser(@AuthenticationPrincipal Jwt principal) {
         return ResponseEntity.ok(routeService.getRoutesByUser(principal.getClaim("email")));
     }

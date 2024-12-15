@@ -16,7 +16,7 @@ public class UserController {
     @Autowired
     private UserService userService;
 
-    @GetMapping("/")
+    @PostMapping("")
     public ResponseEntity<UserEntity> getUser(@AuthenticationPrincipal Jwt principal) {
         String email = principal.getClaim("email");
         String firstName = principal.getClaim("given_name");
@@ -26,7 +26,7 @@ public class UserController {
         return ResponseEntity.ok(userService.getUser(email, firstName, lastName, profilePicture));
     }
 
-    @PutMapping("/")
+    @PutMapping("")
     public ResponseEntity<UserEntity> editUser(@RequestBody UserDTO userDTO, @AuthenticationPrincipal Jwt principal){
         return ResponseEntity.ok(userService.updateUser(principal.getClaim("email"), userDTO));
     }
