@@ -1,0 +1,33 @@
+#version: "3.8"
+#services:
+#  app:
+#    build:
+#      context: .
+#    image: sanomc/diplomarbeits-spring-application:latest
+#    container_name: diplomarbeits-spring-application
+#    environment:
+#      SPRING_DATASOURCE_URL: jdbc:mysql://db:3306/da-db
+#      SPRING_DATASOURCE_USERNAME: root
+#      SPRING_DATASOURCE_PASSWORD: Wwsdm1dH?
+#      SPRING_JPA_DATABASE_PLATFORM: org.hibernate.dialect.MySQLDialect
+#    ports:
+#      - "8080:8080"
+#    depends_on:
+#      - db
+#    networks:
+#      - app-network
+#
+#  db:
+#    image: sanomc/diplomarbeits-datenbank:latest
+#    container_name: diplomarbeits-datenbank
+#    environment:
+#      MYSQL_ROOT_PASSWORD: Wwsdm1dH?
+#      MYSQL_DATABASE: da-db
+#    ports:
+#      - "3306:3306"
+#    networks:
+#      - app-network
+#
+#networks:
+#  app-network:
+#    driver: bridge
