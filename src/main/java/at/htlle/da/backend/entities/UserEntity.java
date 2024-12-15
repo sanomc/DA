@@ -35,6 +35,9 @@ public class UserEntity {
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Route> routes = new ArrayList<>();
 
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<EmissionsCalculator> emissions = new ArrayList<>();
+
     public String getEmail() {
         return email;
     }
@@ -120,5 +123,13 @@ public class UserEntity {
 
     public void setRoutes(List<Route> routes) {
         this.routes = routes;
+    }
+
+    public List<EmissionsCalculator> getEmissions() {
+        return emissions;
+    }
+
+    public void setQuestionnaires(List<EmissionsCalculator> emissions) {
+        this.emissions = emissions;
     }
 }

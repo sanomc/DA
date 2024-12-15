@@ -20,7 +20,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 @Service
-public class EmissionService {
+public class RouteService {
 
     @Autowired
     private TypeRepository typeRepository;
