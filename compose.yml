@@ -1,0 +1,11 @@
+services:
+  mysql:
+    image: 'mysql:latest'
+    environment:
+      - 'MYSQL_DATABASE=da-db'
+      - 'MYSQL_PASSWORD=DA-Password'
+      - 'MYSQL_ROOT_PASSWORD=DA-Password'
+      - 'MYSQL_USER=root'
+    ports:
+      - '3306:3306'
+
