@@ -1,29 +1,68 @@
-version: "3.7"
-services:
-  da-sprung-backend:
-    build: .
-    restart: always
-    ports:
-      - 8080:8080
-    networks:
-      - diplomarbeit-at
-    environment:
-      - spring.datasource.url=jdbc:mysql://mysqldb:3306/da-db?allowPublicKeyRetrieval=true
-    depends_on:
-      - mysqldb
-    
-    volumes:
-      - .m2:/root/.m2
+#version: "3.7"
+#services:
+#  da-sprung-backend:
+#    build: .
+#    restart: always
+#    ports:
+#      - 8080:8080
+#    networks:
+#      - diplomarbeit-at
+#    environment:
+#      - spring.datasource.url=jdbc:mysql://mysqldb:3306/da-db?allowPublicKeyRetrieval=true
+#    depends_on:
+#      - mysqldb
+#
+#    volumes:
+#      - .m2:/root/.m2
+#
+#  mysqldb:
+#    image: "mysql:9.1"
+#    restart: always
+#    ports:
+#      - 3306:3306
+#    networks:
+#      - diplomarbeit-at
+#    environment:
+#      MYSQL_DATABASE: da-db
+#      MYSQL_ROOT_PASSWORD: Wwsdm1dH?
+#networks:
+#  diplomarbeit-at:
 
-  mysqldb:
-    image: "mysql:9.1"
+version: '3.8'
+
+services:
+  da-mysqldb:
+    image: mysql:9.1
+    container_name: da-mysqldb
     restart: always
+    volumes:
+      - ./db:/var/lib/mysql
+      - ./my.cnf:/etc/mysql/my.cnf # DOUBLE CHECK THE CONF! Mount custom MySQL configuration file
+      - ./db_init.sql:/docker-entrypoint-initdb.d/db_init.sql # Mount SQL initialization scripts
+
+    environment:
+      MYSQL_ROOT_PASSWORD: Wwsdm1dH?
+      MYSQL_DATABASE: da-db
+
     ports:
-      - 3306:3306
+      - "3306:3306"
     networks:
       - diplomarbeit-at
+
+  da-springapi:
+    container_name: da-springapi
+    build: .
+    ports:
+      - "8080:8080"
+    depends_on:
+      - da-mysqldb
     environment:
-      MYSQL_DATABASE: da-db
-      MYSQL_ROOT_PASSWORD: Wwsdm1dH?
+      MYSQL_HOST: da-mysqldb
+      MYSQL_USER: root
+      MYSQL_PASSWORD: Wwsdm1dH?
+      MYSQL_PORT: 3306
+    networks:
+      - diplomarbeit-at
 networks:
   diplomarbeit-at:
+    driver: bridge
